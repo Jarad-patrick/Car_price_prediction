@@ -75,7 +75,7 @@ model = Pipeline(
     steps=[
         ('preprocessor',preprocessor),
         ('regressor', RandomForestRegressor(
-            n_estimators=300,
+            n_estimators=150,
             random_state=42,
             n_jobs=-1
         ))
@@ -91,8 +91,21 @@ rmse = np.sqrt (mean_squared_error(y_test,y_pred))
 r2 = r2_score(y_test, y_pred)
 
 
-
 print(f"MAE: {mae:,.0f}")
 print(f"RMSE: {rmse:,.0f}")
 print(f"R²: {r2:.3f}")
 
+
+
+#get feature importances 
+
+feature_names = model.named_steps['preprocessor'].get_feature_names_out()
+
+importances = model.named_steps['regressor'].feature_importances_
+
+fi = pd.DataFrame({
+    'feature':feature_names,
+    'importance':importances
+}).sort_values(by='importance', ascending=False)
+
+print(fi.head(20))
