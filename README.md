@@ -1,7 +1,7 @@
 Data Cleaning & Preparation Issues Encountered
 
 Inconsistent missing value representations
-Missing values were encoded using multiple symbols and strings ('-', '—', empty strings, 'None', 'null'), which were not detected by isnull() until standardized.
+Missing values were encoded using multiple symbols and strings ('-', '—', empty strings, 'None', 'null',), which were not detected by isnull() until standardized.
 
 Numeric data stored as text with units
 Several numeric columns contained units or text:
