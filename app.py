@@ -3,26 +3,35 @@ from pydantic import BaseModel
 import joblib
 import pandas as pd 
 
-model = joblib.load('car_price_prediction_model.pkl')
+model = joblib.load('car_price_prediction.pkl')
 
 
 app = FastAPI(title = 'Car prediction API')
 
+from pydantic import BaseModel
+
 class Car(BaseModel):
+    # numerical features
     levy: int
+    prod_year: int
+    cylinders: int
+    airbags: int
+    engine_volume: float
+    mileage: int
+    is_turbo: int
+
+    # categorical features
     manufacturer: str
     model: str
-    prod_year: int
     category: str
-    engine_volume: float
-    is_turbo: int
-    mileage: int
     gear_box_type: str
     drive_wheels: str
     doors: str
     wheel: str
-    colour: str
-    airbags: int
+    color: str
+    leather_interior: str
+    fuel_type: str
+
 
 @app.post("/predict")
 def predict_price(car: Car):

@@ -10,53 +10,61 @@ import joblib
 
 df = pd.read_csv('car_price_prediction.csv')
 
-df.drop(columns=['ID'], inplace=True)
+df.columns = (
+    df.columns
+      .str.strip()
+      .str.lower()
+      .str.replace(r'[^\w]+', '_', regex=True)
+)
+
+
+df.drop(columns=['id'], inplace=True)
 
 #standardize missing values
 missing_values = ['-', '—', ' ', '', 'None', 'null']
 df.replace(missing_values, np.nan, inplace=True)
 
-df.dropna(subset=['Levy'], inplace=True)
+df.dropna(subset=['levy'], inplace=True)
 
 #create is_turbo column 
 df['is_turbo'] = (
-    df['Engine volume']
+    df['engine_volume']
     .astype(str)
     .str.contains(r'turbo|\bt\b', case=False, regex=True)
     .astype(int)
 )
 
 #extract numeric engine volume ONLY
-df['Engine volume'] = (
-    df['Engine volume']
+df['engine_volume'] = (
+    df['engine_volume']
     .astype(str)
     .str.replace(r'[^0-9\.]', '', regex=True)
 )
 
-df['Engine volume'] = pd.to_numeric(df['Engine volume'], errors='coerce')
+df['engine_volume'] = pd.to_numeric(df['engine_volume'], errors='coerce')
 
 
-df['Mileage'] = (
-    df['Mileage']
+df['mileage'] = (
+    df['mileage']
     .astype(str)                    
     .str.replace(r'[^0-9]', '', regex=True)  #used to remove km
     .astype(float)  
 )
 
 
-x = df.drop('Price', axis=1)
-y = df['Price']
+x = df.drop('price', axis=1)
+y = df['price']
 
 
 numerical_cols = [
-    'Levy', 'Prod. year', 'Cylinders',
-    'Airbags', 'Engine volume','Mileage', 'is_turbo'
+    'levy', 'prod_year', 'cylinders',
+    'airbags', 'engine_volume','mileage', 'is_turbo'
 ]
 
 categorical_cols = [
-    'Manufacturer', 'Model', 'Category',
-    'Gear box type', 'Drive wheels',
-    'Doors', 'Wheel', 'Color', 'Leather interior', 'Fuel type',
+    'manufacturer', 'model', 'category',
+    'gear_box_type', 'drive_wheels',
+    'doors', 'wheel', 'color', 'leather_interior', 'fuel_type',
 ]
 
 x_train, x_test, y_train, y_test = train_test_split(
@@ -87,8 +95,8 @@ model.fit(x_train,y_train)
 
 y_pred = model.predict(x_test)
 
-joblib.dump(model,'car_price_prediction_model.pkl')
 
+joblib.dump(model, "car_price_prediction.pkl")
 
 
 #get feature importances
