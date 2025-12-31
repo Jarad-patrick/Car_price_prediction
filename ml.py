@@ -6,6 +6,7 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import joblib
 
 df = pd.read_csv('car_price_prediction.csv')
 
@@ -86,18 +87,11 @@ model.fit(x_train,y_train)
 
 y_pred = model.predict(x_test)
 
-mae = mean_absolute_error(y_test,y_pred)
-rmse = np.sqrt (mean_squared_error(y_test,y_pred))
-r2 = r2_score(y_test, y_pred)
-
-
-print(f"MAE: {mae:,.0f}")
-print(f"RMSE: {rmse:,.0f}")
-print(f"R²: {r2:.3f}")
+joblib.dump(model,'car_price_prediction_model.pkl')
 
 
 
-#get feature importances 
+#get feature importances
 
 feature_names = model.named_steps['preprocessor'].get_feature_names_out()
 
@@ -108,4 +102,5 @@ fi = pd.DataFrame({
     'importance':importances
 }).sort_values(by='importance', ascending=False)
 
-print(fi.head(20))
+
+
